@@ -310,7 +310,7 @@ app.post('/api/auth/register', [
     // Транзакция для создания пользователя и назначения роли
     await db.transaction(async trx => {
       // Создание пользователя
-      const [userId] = await trx('users').insert({
+      const [newUser] = await trx('users').insert({
         email,
         password_hash: passwordHash,
         first_name: firstName,
@@ -318,6 +318,8 @@ app.post('/api/auth/register', [
         phone: phone || null,
         is_active: true
       }).returning('id');
+      
+      const userId = newUser.id || newUser;
       
       // Получение ID роли "customer"
       const customerRole = await trx('roles').where({ name: 'customer' }).first();

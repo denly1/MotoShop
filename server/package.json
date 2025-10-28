@@ -12,7 +12,10 @@
     "seed": "knex seed:run",
     "seed:make": "knex seed:make",
     "test": "jest --verbose --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "create-users": "node create-test-users.js",
+    "add-images": "node add-product-images.js",
+    "update-images": "node update-specific-images.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
