@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { formatPrice } from '../../utils/formatters'
+import ImageUpload from '../../components/ui/ImageUpload'
 
 const ProductsManagePage = () => {
   const [products, setProducts] = useState([])
@@ -264,14 +265,21 @@ const ProductsManagePage = () => {
                 </div>
               </div>
 
+              {/* Загрузка изображения */}
+              <ImageUpload
+                currentImage={formData.image_url}
+                onImageUpload={(url) => setFormData({...formData, image_url: url})}
+              />
+
+              {/* Или вручную URL */}
               <div>
-                <label className="block text-sm font-medium mb-1">URL изображения</label>
+                <label className="block text-sm font-medium mb-1">Или введите URL изображения</label>
                 <input
                   type="text"
                   value={formData.image_url}
                   onChange={(e) => setFormData({...formData, image_url: e.target.value})}
                   className="input w-full"
-                  placeholder="https://example.com/image.jpg или /images/product.jpg"
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
 

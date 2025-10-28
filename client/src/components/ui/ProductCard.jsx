@@ -28,23 +28,23 @@ const ProductCard = ({ product }) => {
   
   return (
     <>
-      <div className="card group">
+      <div className="card group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
         <Link to={`/product/${product.slug}`} className="block">
           {/* Изображение товара */}
-          <div className="relative aspect-square overflow-hidden">
+          <div className="relative aspect-square overflow-hidden rounded-t-lg bg-gradient-to-br from-gray-100 to-gray-200">
             <img 
-              src={product.image_url || 'https://via.placeholder.com/300'} 
+              src={product.image_url || 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400'} 
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
             />
             {product.is_featured && (
-              <span className="absolute top-2 left-2 bg-secondary-500 text-white text-xs px-2 py-1 rounded">
-                Хит продаж
+              <span className="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg animate-pulse">
+                ⭐ Хит продаж
               </span>
             )}
             {product.old_price && (
-              <span className="absolute top-2 right-2 bg-secondary-500 text-white text-xs px-2 py-1 rounded">
-                Скидка {Math.round((1 - product.price / product.old_price) * 100)}%
+              <span className="absolute top-3 right-3 bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                -{Math.round((1 - product.price / product.old_price) * 100)}%
               </span>
             )}
             

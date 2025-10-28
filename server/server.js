@@ -16,6 +16,7 @@ import { createObjectCsvWriter } from 'csv-writer';
 
 // Импорт маршрутов админ-панели
 import adminRoutes from './routes/adminRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 // Инициализация переменных окружения
 dotenv.config();
@@ -36,6 +37,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Статическая папка для изображений
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Настройка хранилища для загрузки файлов
 const storage = multer.diskStorage({
@@ -2301,6 +2305,9 @@ app.get('/api/roles', authenticateToken, async (req, res) => {
 
 // Подключение маршрутов админ-панели
 app.use('/api/admin', adminRoutes);
+
+// Подключение маршрутов загрузки файлов
+app.use('/api/upload', uploadRoutes);
 
 // ===== Системные маршруты =====
 
