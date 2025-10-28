@@ -1,0 +1,116 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #e63946;
+  --secondary-color: #1d3557;
+  --accent-color: #f1faee;
+  --text-color: #1d1d1d;
+  --light-gray: #f8f9fa;
+  --medium-gray: #dee2e6;
+  --dark-gray: #495057;
+  --success-color: #06d6a0;
+  --warning-color: #ffd60a;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-color);
+  background-color: #fff;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Utility Classes */
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #d62828;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #14213d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(29, 53, 87, 0.3);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 3px solid var(--light-gray);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

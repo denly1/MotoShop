@@ -1,0 +1,131 @@
+version: '3.8'
+
+services:
+  # PostgreSQL база данных
+  postgres:
+    image: postgres:14
+    container_name: motoshop-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1}
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-data:/data/postgres
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    networks:
+      - motoshop-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin для администрирования БД
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: motoshop-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@motoshop.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - motoshop-network
+    depends_on:
+      - postgres
+
+  # Backend API на Express.js
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: motoshop-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${BACKEND_PORT:-3000}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_NAME: ${POSTGRES_DB:-motoshop}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      SMTP_HOST: ${SMTP_HOST:-smtp.mail.ru}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_SECURE: ${SMTP_SECURE:-true}
+      SMTP_USER: ${SMTP_USER:-user@mail.ru}
+      SMTP_PASS: ${SMTP_PASS:-password}
+      EMAIL_FROM: ${EMAIL_FROM:-"MotoShop <info@motoshop.ru>"}
+      EMAIL_TO: ${EMAIL_TO:-orders@motoshop.ru}
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    networks:
+      - motoshop-network
+    depends_on:
+      - postgres
+    command: sh -c "npm run migrate && npm run seed && npm run dev"
+
+  # Frontend на React + Vite
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: motoshop-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    networks:
+      - motoshop-network
+    depends_on:
+      - backend
+      - analytics
+
+  # Микросервис аналитики
+  analytics:
+    build:
+      context: ./analytics
+      dockerfile: Dockerfile
+    container_name: motoshop-analytics
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${ANALYTICS_PORT:-3001}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_NAME: ${POSTGRES_DB:-motoshop}
+      JWT_SECRET: ${JWT_SECRET:-your_jwt_secret_key}
+    volumes:
+      - ./analytics:/app
+      - /app/node_modules
+    ports:
+      - "${ANALYTICS_PORT:-3001}:3001"
+    networks:
+      - motoshop-network
+    depends_on:
+      - postgres
+      - backend
+
+networks:
+  motoshop-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  pgadmin-data:

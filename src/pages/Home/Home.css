@@ -1,0 +1,168 @@
+.hero {
+  background: linear-gradient(135deg, #1d3557 0%, #457b9d 100%);
+  color: white;
+  padding: 4rem 0;
+  margin-bottom: 3rem;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.highlight {
+  color: var(--primary-color);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hero-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.hero-bike-icon {
+  font-size: 8rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.features {
+  padding: 3rem 0;
+  background-color: var(--light-gray);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.feature-card p {
+  color: var(--dark-gray);
+  line-height: 1.5;
+}
+
+.featured-products {
+  padding: 3rem 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--secondary-color);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.section-footer {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.cta-section {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #d62828 100%);
+  color: white;
+  padding: 4rem 0;
+  text-align: center;
+  border-radius: 12px;
+  margin: 3rem 0;
+}
+
+.cta-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.cta-content p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .hero-bike-icon {
+    font-size: 5rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .cta-content h2 {
+    font-size: 1.8rem;
+  }
+
+  .cta-content p {
+    font-size: 1rem;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
