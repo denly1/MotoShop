@@ -201,87 +201,110 @@ const DashboardPage = () => {
             </div>
           </div>
           
-          {/* Графики */}
+          {/* Графики - компактные */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* График выручки */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-lg font-semibold mb-3 flex items-center text-gray-800">
                 <span className="mr-2">📈</span>
-                Выручка за последние 7 дней
-              </h2>
-              <Line
-                data={{
-                  labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-                  datasets: [
-                    {
-                      label: 'Выручка (₽)',
-                      data: dashboardStats.weeklyRevenue || [0, 0, 0, 0, 0, 0, 0],
-                      borderColor: 'rgb(59, 130, 246)',
-                      backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                      fill: true,
-                      tension: 0.4
-                    }
-                  ]
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      display: false
-                    }
-                  },
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      ticks: {
-                        callback: (value) => formatPrice(value)
+                Выручка за 7 дней
+              </h3>
+              <div style={{ height: '180px' }}>
+                <Line
+                  data={{
+                    labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+                    datasets: [
+                      {
+                        label: 'Выручка (₽)',
+                        data: dashboardStats.weeklyRevenue || [0, 0, 0, 0, 0, 0, 0],
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          callback: (value) => formatPrice(value),
+                          font: {
+                            size: 11
+                          }
+                        }
+                      },
+                      x: {
+                        ticks: {
+                          font: {
+                            size: 11
+                          }
+                        }
                       }
                     }
-                  }
-                }}
-                height={250}
-              />
+                  }}
+                />
+              </div>
             </div>
 
             {/* График заказов */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-lg font-semibold mb-3 flex items-center text-gray-800">
                 <span className="mr-2">📊</span>
-                Заказы за последние 7 дней
-              </h2>
-              <Bar
-                data={{
-                  labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-                  datasets: [
-                    {
-                      label: 'Заказы',
-                      data: dashboardStats.weeklyOrders || [0, 0, 0, 0, 0, 0, 0],
-                      backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                      borderColor: 'rgb(34, 197, 94)',
-                      borderWidth: 1
-                    }
-                  ]
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      display: false
-                    }
-                  },
-                  scales: {
-                    y: {
-                      beginAtZero: true,
-                      ticks: {
-                        stepSize: 1
+                Заказы за 7 дней
+              </h3>
+              <div style={{ height: '180px' }}>
+                <Bar
+                  data={{
+                    labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+                    datasets: [
+                      {
+                        label: 'Заказы',
+                        data: dashboardStats.weeklyOrders || [0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                        borderColor: 'rgb(34, 197, 94)',
+                        borderWidth: 1
+                      }
+                    ]
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: false
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          stepSize: 1,
+                          font: {
+                            size: 11
+                          }
+                        }
+                      },
+                      x: {
+                        ticks: {
+                          font: {
+                            size: 11
+                          }
+                        }
                       }
                     }
-                  }
-                }}
-                height={250}
-              />
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -317,14 +340,14 @@ const DashboardPage = () => {
             </div>
             
             {/* Статусы заказов - круговая диаграмма */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold mb-4 flex items-center">
+            <div className="bg-white rounded-lg shadow-md p-4">
+              <h3 className="text-lg font-semibold mb-3 flex items-center text-gray-800">
                 <span className="mr-2">🎯</span>
-                Распределение заказов по статусам
-              </h2>
+                Статусы заказов
+              </h3>
               
               {dashboardStats.ordersByStatus && dashboardStats.ordersByStatus.length > 0 ? (
-                <div className="flex justify-center items-center" style={{ height: '250px' }}>
+                <div className="flex justify-center items-center" style={{ height: '180px' }}>
                   <Doughnut
                     data={{
                       labels: dashboardStats.ordersByStatus.map(item => getStatusLabel(item.status)),
@@ -354,7 +377,13 @@ const DashboardPage = () => {
                       maintainAspectRatio: false,
                       plugins: {
                         legend: {
-                          position: 'bottom'
+                          position: 'bottom',
+                          labels: {
+                            font: {
+                              size: 11
+                            },
+                            padding: 8
+                          }
                         }
                       }
                     }}
