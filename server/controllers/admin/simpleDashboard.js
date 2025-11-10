@@ -23,7 +23,9 @@ export const getSimpleDashboardStats = async (req, res) => {
       topProducts: [],
       recentOrders: [],
       ordersByStatus: [],
-      salesChart: []
+      salesChart: [],
+      weeklyRevenue: [0, 0, 0, 0, 0, 0, 0],
+      weeklyOrders: [0, 0, 0, 0, 0, 0, 0]
     };
     
     // Получаем общее количество заказов
@@ -160,6 +162,44 @@ export const getSimpleDashboardStats = async (req, res) => {
       console.log('✅ Статусов заказов:', stats.ordersByStatus.length);
     } catch (err) {
       console.error('❌ Ошибка при получении статусов заказов:', err.message);
+    }
+    
+    // Данные для графиков за последние 7 дней
+    try {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      // Получаем заказы за последние 7 дней
+      const weeklyData = await db.raw(`
+        SELECT 
+          DATE(created_at) as date,
+          COUNT(*)::integer as orders_count,
+          COALESCE(SUM(CASE WHEN status != 'cancelled' THEN total_amount ELSE 0 END), 0)::numeric as revenue
+        FROM orders
+        WHERE created_at >= ?
+        GROUP BY DATE(created_at)
+        ORDER BY date
+      `, [sevenDaysAgo]);
+      
+      // Заполняем массивы для последних 7 дней
+      const today = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        const dayData = weeklyData.rows.find(row => 
+          row.date && row.date.toISOString().split('T')[0] === dateStr
+        );
+        
+        const dayIndex = 6 - i;
+        stats.weeklyOrders[dayIndex] = dayData ? dayData.orders_count : 0;
+        stats.weeklyRevenue[dayIndex] = dayData ? parseFloat(dayData.revenue) : 0;
+      }
+      
+      console.log('✅ Недельные данные загружены');
+    } catch (err) {
+      console.error('❌ Ошибка при получении недельных данных:', err.message);
     }
     
     console.log('✅ Статистика дашборда успешно загружена');
