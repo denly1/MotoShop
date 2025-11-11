@@ -75,6 +75,16 @@ const ProductsManagePage = () => {
   const handleSave = async (e) => {
     e.preventDefault()
     
+    if (!formData.name || !formData.price) {
+      alert('Пожалуйста, заполните обязательные поля: название и цена')
+      return
+    }
+    
+    if (parseFloat(formData.price) <= 0) {
+      alert('Цена должна быть больше нуля')
+      return
+    }
+    
     try {
       const token = localStorage.getItem('token')
       if (!token) {
@@ -88,8 +98,6 @@ const ProductsManagePage = () => {
       
       const method = editingProduct ? 'put' : 'post'
       
-      console.log('Сохранение товара:', { url, method, formData })
-      
       const response = await axios[method](url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -97,14 +105,27 @@ const ProductsManagePage = () => {
         }
       })
       
-      console.log('Ответ сервера:', response.data)
-      alert(editingProduct ? 'Товар обновлен!' : 'Товар создан!')
+      alert(editingProduct ? 'Товар успешно обновлен!' : 'Товар успешно добавлен!')
       setShowModal(false)
+      setFormData({
+        name: '',
+        slug: '',
+        sku: '',
+        description: '',
+        price: '',
+        old_price: '',
+        image_url: '',
+        brand: '',
+        weight: '',
+        dimensions: '',
+        is_active: true,
+        is_featured: false
+      })
       fetchProducts()
     } catch (error) {
       console.error('Ошибка при сохранении:', error)
-      console.error('Детали ошибки:', error.response?.data)
-      alert(`Ошибка при сохранении товара: ${error.response?.data?.message || error.message}`)
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message
+      alert(`Ошибка при сохранении товара: ${errorMessage}`)
     }
   }
 
@@ -114,6 +135,11 @@ const ProductsManagePage = () => {
     
     try {
       const token = localStorage.getItem('token')
+      if (!token) {
+        alert('Необходимо войти в систему')
+        return
+      }
+      
       await axios.delete(
         `${import.meta.env.VITE_API_URL || 'http://localhost:3003/api'}/admin/products/${id}`,
         {
@@ -123,11 +149,12 @@ const ProductsManagePage = () => {
         }
       )
       
-      alert('Товар удален!')
+      alert('Товар успешно удален!')
       fetchProducts()
     } catch (error) {
       console.error('Ошибка при удалении:', error)
-      alert('Ошибка при удалении товара')
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message
+      alert(`Ошибка при удалении товара: ${errorMessage}`)
     }
   }
 

@@ -13,7 +13,16 @@ const CartPage = () => {
   
   // Обработчик изменения количества товара
   const handleQuantityChange = (productId, quantity) => {
-    updateQuantity(productId, parseInt(quantity))
+    const newQuantity = parseInt(quantity)
+    if (newQuantity < 1) {
+      alert('Количество должно быть не менее 1')
+      return
+    }
+    if (newQuantity > 99) {
+      alert('Максимальное количество - 99 штук')
+      return
+    }
+    updateQuantity(productId, newQuantity)
   }
   
   // Обработчик удаления товара из корзины

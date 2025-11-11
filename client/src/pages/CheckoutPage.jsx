@@ -37,6 +37,11 @@ const CheckoutPage = () => {
   
   // Обработка отправки формы
   const onSubmit = async (data) => {
+    if (cartItems.length === 0) {
+      setError('Корзина пуста. Добавьте товары перед оформлением заказа.')
+      return
+    }
+    
     try {
       setLoading(true)
       setError(null)
@@ -50,10 +55,7 @@ const CheckoutPage = () => {
       const response = await ordersAPI.create(orderData)
       
       if (response.data.success) {
-        // Очистка корзины
         clearCart()
-        
-        // Перенаправление на страницу успешного оформления заказа
         navigate('/order-success', { 
           state: { 
             orderNumber: response.data.orderNumber,
@@ -65,7 +67,8 @@ const CheckoutPage = () => {
       }
     } catch (err) {
       console.error('Ошибка при оформлении заказа:', err)
-      setError(err.response?.data?.error || 'Ошибка при оформлении заказа')
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Ошибка при оформлении заказа. Попробуйте позже.'
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
