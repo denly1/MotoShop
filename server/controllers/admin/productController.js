@@ -104,9 +104,13 @@ export const createProduct = async (req, res) => {
       sku,
       description,
       price,
+      old_price,
       oldPrice,
+      image_url,
       imageUrl,
+      is_active,
       isActive,
+      is_featured,
       isFeatured,
       brand,
       weight,
@@ -114,9 +118,16 @@ export const createProduct = async (req, res) => {
       categoryIds,
       quantity
     } = req.body;
+    
+    const finalOldPrice = old_price !== undefined ? old_price : oldPrice;
+    const finalImageUrl = image_url !== undefined ? image_url : imageUrl;
+    const finalIsActive = is_active !== undefined ? is_active : isActive;
+    const finalIsFeatured = is_featured !== undefined ? is_featured : isFeatured;
+    
+    const finalSlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
     // Проверка уникальности slug
-    const existingProduct = await db('products').where({ slug }).first();
+    const existingProduct = await db('products').where({ slug: finalSlug }).first();
     if (existingProduct) {
       return res.status(400).json({
         success: false,
@@ -129,14 +140,14 @@ export const createProduct = async (req, res) => {
       // Создание товара
       const [productId] = await trx('products').insert({
         name,
-        slug,
+        slug: finalSlug,
         sku: sku || null,
         description: description || null,
         price,
-        old_price: oldPrice || null,
-        image_url: imageUrl || null,
-        is_active: isActive !== undefined ? isActive : true,
-        is_featured: isFeatured !== undefined ? isFeatured : false,
+        old_price: finalOldPrice || null,
+        image_url: finalImageUrl || null,
+        is_active: finalIsActive !== undefined ? finalIsActive : true,
+        is_featured: finalIsFeatured !== undefined ? finalIsFeatured : false,
         brand: brand || null,
         weight: weight || null,
         dimensions: dimensions || null
@@ -169,9 +180,9 @@ export const createProduct = async (req, res) => {
         record_id: productId,
         new_values: JSON.stringify({
           name,
-          slug,
+          slug: finalSlug,
           price,
-          is_active: isActive !== undefined ? isActive : true
+          is_active: finalIsActive !== undefined ? finalIsActive : true
         }),
         ip_address: req.ip,
         user_agent: req.headers['user-agent']
@@ -204,15 +215,24 @@ export const updateProduct = async (req, res) => {
       sku,
       description,
       price,
+      old_price,
       oldPrice,
+      image_url,
       imageUrl,
+      is_active,
       isActive,
+      is_featured,
       isFeatured,
       brand,
       weight,
       dimensions,
       categoryIds
     } = req.body;
+    
+    const finalOldPrice = old_price !== undefined ? old_price : oldPrice;
+    const finalImageUrl = image_url !== undefined ? image_url : imageUrl;
+    const finalIsActive = is_active !== undefined ? is_active : isActive;
+    const finalIsFeatured = is_featured !== undefined ? is_featured : isFeatured;
 
     // Проверка существования товара
     const product = await db('products').where({ id }).first();
@@ -244,11 +264,11 @@ export const updateProduct = async (req, res) => {
           slug: slug || product.slug,
           sku: sku !== undefined ? sku : product.sku,
           description: description !== undefined ? description : product.description,
-          price: price || product.price,
-          old_price: oldPrice !== undefined ? oldPrice : product.old_price,
-          image_url: imageUrl !== undefined ? imageUrl : product.image_url,
-          is_active: isActive !== undefined ? isActive : product.is_active,
-          is_featured: isFeatured !== undefined ? isFeatured : product.is_featured,
+          price: price !== undefined ? price : product.price,
+          old_price: finalOldPrice !== undefined ? finalOldPrice : product.old_price,
+          image_url: finalImageUrl !== undefined ? finalImageUrl : product.image_url,
+          is_active: finalIsActive !== undefined ? finalIsActive : product.is_active,
+          is_featured: finalIsFeatured !== undefined ? finalIsFeatured : product.is_featured,
           brand: brand !== undefined ? brand : product.brand,
           weight: weight !== undefined ? weight : product.weight,
           dimensions: dimensions !== undefined ? dimensions : product.dimensions,
@@ -286,8 +306,8 @@ export const updateProduct = async (req, res) => {
         new_values: JSON.stringify({
           name: name || product.name,
           slug: slug || product.slug,
-          price: price || product.price,
-          is_active: isActive !== undefined ? isActive : product.is_active
+          price: price !== undefined ? price : product.price,
+          is_active: finalIsActive !== undefined ? finalIsActive : product.is_active
         }),
         ip_address: req.ip,
         user_agent: req.headers['user-agent']

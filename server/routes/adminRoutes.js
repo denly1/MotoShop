@@ -16,20 +16,17 @@ const router = express.Router();
 router.use(authenticateToken);
 router.use(checkRole(['admin', 'manager']));
 
-// Маршруты для управления товарами (только для админа)
+// Маршруты для управления товарами (админ и менеджер)
 router.get('/products', checkPermission('products', 'read'), productController.getAllProducts);
 router.post('/products', 
-  checkRole(['admin']), 
   checkPermission('products', 'create'),
   [
     body('name').notEmpty().withMessage('Название товара обязательно'),
-    body('slug').notEmpty().withMessage('Slug товара обязателен'),
     body('price').isNumeric().withMessage('Цена должна быть числом')
   ],
   productController.createProduct
 );
 router.put('/products/:id', 
-  checkRole(['admin']), 
   checkPermission('products', 'update'),
   productController.updateProduct
 );
