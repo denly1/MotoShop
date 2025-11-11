@@ -16,20 +16,33 @@ const AdminHeader = () => {
     navigate('/')
   }
   
+  const isAdmin = user?.roles?.includes('admin')
+  const isManager = user?.roles?.includes('manager')
+  
   return (
-    <header className="bg-white shadow-sm z-10">
+    <header className={`shadow-sm z-10 ${isAdmin ? 'bg-gradient-to-r from-purple-600 to-blue-600' : 'bg-gradient-to-r from-blue-500 to-cyan-500'}`}>
       <div className="px-4 py-3 flex justify-between items-center">
-        <div>
-          <h1 className="text-lg font-medium text-gray-900">Панель администратора</h1>
+        <div className="flex items-center space-x-3">
+          <div className="text-3xl">
+            {isAdmin ? '👑' : '👔'}
+          </div>
+          <div>
+            <h1 className="text-lg font-bold text-white">
+              {isAdmin ? 'Панель Администратора' : 'Панель Менеджера'}
+            </h1>
+            <p className="text-xs text-white opacity-90">
+              {isAdmin ? 'Полный доступ ко всем функциям' : 'Управление товарами и заказами'}
+            </p>
+          </div>
         </div>
         
         {/* User Menu */}
         <div className="relative">
           <button
             onClick={toggleProfileMenu}
-            className="flex items-center text-gray-600 hover:text-primary-600 focus:outline-none"
+            className="flex items-center text-white hover:text-gray-200 focus:outline-none bg-white bg-opacity-20 px-3 py-2 rounded-lg"
           >
-            <span className="mr-2">{user?.firstName || 'Администратор'}</span>
+            <span className="mr-2 font-medium">{user?.firstName || (isAdmin ? 'Администратор' : 'Менеджер')}</span>
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>

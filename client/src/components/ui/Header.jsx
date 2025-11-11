@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
@@ -9,18 +9,37 @@ const Header = () => {
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const profileMenuRef = useRef(null)
+  
+  // Закрытие меню при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false)
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
   
-  const toggleProfileMenu = () => {
+  const toggleProfileMenu = (e) => {
+    e.stopPropagation()
     setIsProfileMenuOpen(!isProfileMenuOpen)
   }
   
   const handleLogout = () => {
+    setIsProfileMenuOpen(false)
     logout()
     navigate('/')
+  }
+  
+  const closeProfileMenu = () => {
+    setIsProfileMenuOpen(false)
   }
   
   return (
@@ -54,7 +73,7 @@ const Header = () => {
             
             {/* User Menu */}
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="relative" ref={profileMenuRef}>
                 <button
                   onClick={toggleProfileMenu}
                   className="flex items-center text-gray-600 hover:text-primary-600 focus:outline-none"
@@ -66,23 +85,35 @@ const Header = () => {
                 </button>
                 
                 {isProfileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Профиль
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                    <Link 
+                      to="/profile" 
+                      onClick={closeProfileMenu}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      👤 Профиль
                     </Link>
-                    <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Мои заказы
+                    <Link 
+                      to="/orders" 
+                      onClick={closeProfileMenu}
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      📦 Мои заказы
                     </Link>
                     {(user?.roles?.includes('admin') || user?.roles?.includes('manager')) && (
-                      <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Панель администратора
+                      <Link 
+                        to="/admin" 
+                        onClick={closeProfileMenu}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-t border-gray-200"
+                      >
+                        {user?.roles?.includes('admin') ? '👑 Панель администратора' : '👔 Панель менеджера'}
                       </Link>
                     )}
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-gray-200"
                     >
-                      Выйти
+                      🚪 Выйти
                     </button>
                   </div>
                 )}

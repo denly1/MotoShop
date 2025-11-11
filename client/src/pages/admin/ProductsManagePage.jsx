@@ -77,24 +77,34 @@ const ProductsManagePage = () => {
     
     try {
       const token = localStorage.getItem('token')
+      if (!token) {
+        alert('Необходимо войти в систему')
+        return
+      }
+      
       const url = editingProduct
         ? `${import.meta.env.VITE_API_URL || 'http://localhost:3003/api'}/admin/products/${editingProduct.id}`
         : `${import.meta.env.VITE_API_URL || 'http://localhost:3003/api'}/admin/products`
       
       const method = editingProduct ? 'put' : 'post'
       
-      await axios[method](url, formData, {
+      console.log('Сохранение товара:', { url, method, formData })
+      
+      const response = await axios[method](url, formData, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       })
       
+      console.log('Ответ сервера:', response.data)
       alert(editingProduct ? 'Товар обновлен!' : 'Товар создан!')
       setShowModal(false)
       fetchProducts()
     } catch (error) {
       console.error('Ошибка при сохранении:', error)
-      alert('Ошибка при сохранении товара')
+      console.error('Детали ошибки:', error.response?.data)
+      alert(`Ошибка при сохранении товара: ${error.response?.data?.message || error.message}`)
     }
   }
 
